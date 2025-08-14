@@ -9,8 +9,8 @@
 static const char *TAG = "I2C_SCANNER";
 
 // I2C Configuration - same as main project
-#define I2C_MASTER_SCL_IO 22
-#define I2C_MASTER_SDA_IO 21
+#define I2C_MASTER_SCL_IO 9   // Updated to match schematic (GPIO 9)
+#define I2C_MASTER_SDA_IO 8   // Updated to match schematic (GPIO 8)
 #define I2C_MASTER_NUM I2C_NUM_0
 #define I2C_MASTER_FREQ_HZ 100000
 

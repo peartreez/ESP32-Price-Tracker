@@ -34,22 +34,62 @@ This project includes comprehensive breadboard testing support:
 
 ## 🔧 **Hardware Requirements**
 
-- ESP32 development board (ESP32 DevKit, NodeMCU-32S, etc.)
+- ESP32-C3-MINI-1 development board
 - SSD1306 OLED display (128x64 pixels, I2C)
 - Push button (momentary, normally open)
 - LED (any color, for status indication)
 - 220Ω resistor (for LED current limiting)
-- 10kΩ resistor (for button pull-up, though ESP32 has internal pull-up)
 - Breadboard and jumper wires
+- Micro USB cable
 
-## 📍 **Pin Configuration**
+## 📍 **Pin Configuration (Based on Schematic)**
 
-| Component | ESP32 Pin | Description |
-|-----------|-----------|-------------|
-| SSD1306 SDA | GPIO 21 | I2C Data line |
-| SSD1306 SCL | GPIO 22 | I2C Clock line |
+| Component | ESP32-C3-MINI-1 Pin | Description |
+|-----------|---------------------|-------------|
+| SSD1306 SDA | GPIO 8 | I2C Data line |
+| SSD1306 SCL | GPIO 9 | I2C Clock line |
 | Button | GPIO 4 | Input with internal pull-up |
 | LED | GPIO 7 | Output for status indication |
+
+**Note**: The schematic shows ESP32-C3-MINI-1, which has different pin assignments than standard ESP32 boards.
+
+## 🔌 **Schematic & Wiring**
+
+### **Breadboard Layout**
+
+The project includes detailed breadboard wiring diagrams and schematics to help you set up your components correctly.
+
+![Breadboard Schematic](assets/breadboard-schematic.png)
+
+### **Connection Details (Based on Schematic)**
+
+- **Power**: 5V and GND from ESP32-C3-MINI-1 to breadboard power rails
+- **I2C**: SDA (GPIO 8) and SCL (GPIO 9) for OLED display
+- **Button**: GPIO 4 with connection to GND (internal pull-up will be used)
+- **LED**: GPIO 7 through 220Ω resistor to GND
+
+### **Wire Color Convention (From Schematic)**
+
+- **Black wires**: Ground (GND) connections
+- **Red wires**: Power (5V) connections  
+- **Green wires**: Data/Signal connections (I2C SCL/SDA, GPIO for button and LED)
+
+### **Component Layout**
+
+![Component Layout](assets/component-layout.png)
+
+### **Wiring Diagram**
+
+![Wiring Diagram](assets/wiring-diagram.png)
+
+### **Schematic Notes**
+
+Based on your schematic diagram:
+- **ESP32-C3-MINI-1** is used (not standard ESP32)
+- **OLED VCC** connects to **5V** (not 3.3V as in standard ESP32)
+- **Button** uses internal pull-up (no external resistor shown)
+- **LED** has 220Ω resistor for current limiting
+- **I2C pins** are GPIO 8 (SDA) and GPIO 9 (SCL)
 
 ## 📁 **Project Structure**
 
@@ -245,6 +285,7 @@ This project is open source and available under the MIT License.
 
 ## 🙏 **Acknowledgments**
 
+- **The DIY Life** - Inspired this project and provided the original concept
 - **Espressif Systems** for ESP-IDF
 - **CoinGecko** for the free cryptocurrency API
 - **Adafruit** for the original SSD1306 library concept
