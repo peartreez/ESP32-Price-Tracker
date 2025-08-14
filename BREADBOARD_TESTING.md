@@ -23,38 +23,41 @@ This guide will help you test your project on a breadboard before soldering the 
 ## 🔌 **Breadboard Wiring Diagram**
 
 ```
-ESP32-C3-MINI-1 Board    Breadboard          Component
+ESP32-C3-MINI Board      Breadboard          Component
 ----------------------    -----------          ---------
-5V               ----->  Power Rail (+)      Power for components
-GND              ----->  Power Rail (-)      Common ground
-GPIO 8           ----->  SSD1306 SDA         I2C Data line
-GPIO 9           ----->  SSD1306 SCL         I2C Clock line
-GPIO 4           ----->  Button Pin 1        Button input
-Button Pin 2     ----->  Power Rail (+)     5V (with internal pull-up)
-GPIO 7           ----->  LED Anode (+)       LED control
-LED Cathode (-)  --->  220Ω Resistor --->  Power Rail (-)
+3.3V              ----->  Power Rail (+)      Power for components (Pin 2, 3)
+GND               ----->  Power Rail (-)      Common ground
+GPIO 8            ----->  SSD1306 SDA         I2C Data line
+GPIO 9            ----->  SSD1306 SCL         I2C Clock line
+GPIO 4            ----->  Button Pin 1        Button input
+Button Pin 2      ----->  Power Rail (+)      3.3V (Pin 3)
+GPIO 7            ----->  2KΩ Resistor 1      LED control
+LED Anode (+)     ----->  2KΩ Resistor 2      Current limiting
+LED Cathode (-)   ----->  Power Rail (-)      GND (Pin 24)
 ```
 
 ## 📍 **Detailed Pin Connections**
 
 ### **Power Connections**
-- **ESP32-C3-MINI-1 5V** → Breadboard power rail (+)
-- **ESP32-C3-MINI-1 GND** → Breadboard power rail (-)
+- **ESP32-C3-MINI 3.3V (Pin 2, 3)** → Breadboard power rail (+)
+- **ESP32-C3-MINI GND (Pin 1, 6, 8, 12, 15, 16, 19, 24)** → Breadboard power rail (-)
 
 ### **SSD1306 OLED Display (I2C)**
-- **ESP32-C3-MINI-1 GPIO 8** → **SSD1306 SDA** (Data line)
-- **ESP32-C3-MINI-1 GPIO 9** → **SSD1306 SCL** (Clock line)
-- **SSD1306 VCC** → Breadboard power rail (+) (5V)
+- **ESP32-C3-MINI GPIO 8 (Pin 25)** → **SSD1306 SDA** (Data line)
+- **ESP32-C3-MINI GPIO 9 (Pin 26)** → **SSD1306 SCL** (Clock line)
+- **SSD1306 VCC** → Breadboard power rail (+) (3.3V - Pin 2)
 - **SSD1306 GND** → Breadboard power rail (-)
 
 ### **Push Button**
-- **ESP32-C3-MINI-1 GPIO 4** → **Button Pin 1**
-- **Button Pin 2** → Breadboard power rail (+) (5V)
-- **Note**: ESP32-C3-MINI-1 has internal pull-up, but you can add external 10kΩ for reliability
+- **ESP32-C3-MINI GPIO 4 (Pin 20)** → **Button Pin 1**
+- **Button Pin 2** → Breadboard power rail (+) (3.3V - Pin 3)
+- **Note**: ESP32-C3-MINI has internal pull-up, but external 3.3V connection provides reliable operation
 
 ### **Status LED**
-- **ESP32-C3-MINI-1 GPIO 7** → **220Ω Resistor** → **LED Anode (+)**
-- **LED Cathode (-)** → Breadboard power rail (-)
+- **ESP32-C3-MINI GPIO 7 (Pin 23)** → **2KΩ Resistor 1** → **2KΩ Resistor 2** → **LED Anode (+)**
+- **LED Cathode (-)** → Breadboard power rail (-) (GND - Pin 24)
+- **Total Resistance**: 4KΩ (2KΩ + 2KΩ in series)
+- **Note**: This will result in a dimmer LED than typical 220Ω setups
 
 ## ⚠️ **Important Safety Notes**
 

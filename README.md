@@ -34,24 +34,28 @@ This project includes comprehensive breadboard testing support:
 
 ## 🔧 **Hardware Requirements**
 
-- ESP32-C3-MINI-1 development board
+- ESP32-C3-MINI development board
 - SSD1306 OLED display (128x64 pixels, I2C)
 - Push button (momentary, normally open)
 - LED (any color, for status indication)
-- 220Ω resistor (for LED current limiting)
+- **2KΩ resistors (2x) for LED current limiting** ⚠️ **Note: PCB uses 2x 2KΩ in series**
 - Breadboard and jumper wires
 - Micro USB cable
 
-## 📍 **Pin Configuration (Based on Schematic)**
+## 📍 **Pin Configuration (Based on PCB Schematic)**
 
-| Component | ESP32-C3-MINI-1 Pin | Description |
+| Component | ESP32-C3-MINI Pin | Description |
 |-----------|---------------------|-------------|
 | SSD1306 SDA | GPIO 8 | I2C Data line |
 | SSD1306 SCL | GPIO 9 | I2C Clock line |
-| Button | GPIO 4 | Input with internal pull-up |
-| LED | GPIO 7 | Output for status indication |
+| Button | GPIO 4 | Input with 3.3V pull-up |
+| LED | GPIO 7 | Output through 2KΩ + 2KΩ resistors |
 
-**Note**: The schematic shows ESP32-C3-MINI-1, which has different pin assignments than standard ESP32 boards.
+**⚠️ Important PCB Notes:**
+- **OLED VCC**: Connected to **3.3V (Pin 2)**, not 5V
+- **Button**: Connected to **3.3V (Pin 3)** with internal pull-up
+- **LED Circuit**: GPIO 7 → 2KΩ → LED anode → 2KΩ → GND (Pin 24)
+- **Total LED Resistance**: 4KΩ (will be dimmer than typical 220Ω setup)
 
 ## 🔌 **Schematic & Wiring**
 
@@ -61,17 +65,17 @@ The project includes detailed breadboard wiring diagrams and schematics to help 
 
 ![Breadboard Schematic](assets/breadboard-schematic.png)
 
-### **Connection Details (Based on Schematic)**
+### **Connection Details (Based on PCB Schematic)**
 
-- **Power**: 5V and GND from ESP32-C3-MINI-1 to breadboard power rails
+- **Power**: 3.3V and GND from ESP32-C3-MINI to breadboard power rails
 - **I2C**: SDA (GPIO 8) and SCL (GPIO 9) for OLED display
-- **Button**: GPIO 4 with connection to GND (internal pull-up will be used)
-- **LED**: GPIO 7 through 220Ω resistor to GND
+- **Button**: GPIO 4 with connection to 3.3V (Pin 3)
+- **LED**: GPIO 7 through 2KΩ + 2KΩ resistors to GND
 
 ### **Wire Color Convention (From Schematic)**
 
 - **Black wires**: Ground (GND) connections
-- **Red wires**: Power (5V) connections  
+- **Red wires**: Power (3.3V) connections  
 - **Green wires**: Data/Signal connections (I2C SCL/SDA, GPIO for button and LED)
 
 ### **Component Layout**
@@ -82,14 +86,15 @@ The project includes detailed breadboard wiring diagrams and schematics to help 
 
 ![Wiring Diagram](assets/wiring-diagram.png)
 
-### **Schematic Notes**
+### **PCB Schematic Notes**
 
-Based on your schematic diagram:
-- **ESP32-C3-MINI-1** is used (not standard ESP32)
-- **OLED VCC** connects to **5V** (not 3.3V as in standard ESP32)
-- **Button** uses internal pull-up (no external resistor shown)
-- **LED** has 220Ω resistor for current limiting
+Based on your professional PCB schematic:
+- **ESP32-C3-MINI** with 30-pin layout
+- **OLED VCC** connects to **3.3V (Pin 2)** - this is correct for I2C
+- **Button** uses **3.3V (Pin 3)** pull-up
+- **LED** has **2x 2KΩ resistors in series** (4KΩ total)
 - **I2C pins** are GPIO 8 (SDA) and GPIO 9 (SCL)
+- **Power distribution**: Multiple GND pins (1, 6, 8, 12, 15, 16, 19, 24) and 3.3V pins (2, 3)
 
 ## 📁 **Project Structure**
 

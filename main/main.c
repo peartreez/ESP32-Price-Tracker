@@ -29,8 +29,14 @@
 #define I2C_MASTER_FREQ_HZ 100000
 
 // Pin Configuration
-#define BUTTON_PIN GPIO_NUM_4  // Button pin (matches schematic)
-#define LED_PIN GPIO_NUM_7     // LED pin (matches schematic)
+#define BUTTON_PIN GPIO_NUM_4  // Button pin (matches schematic - connected to 3.3V)
+#define LED_PIN GPIO_NUM_7     // LED pin (matches schematic - through 2KΩ + 2KΩ resistors)
+
+// Hardware Configuration Notes (from PCB schematic):
+// - OLED VCC: 3.3V (Pin 2), not 5V
+// - Button: Connected to 3.3V (Pin 3) with internal pull-up
+// - LED: GPIO 7 → 2KΩ resistor → LED anode → 2KΩ resistor → GND (Pin 24)
+// - Total LED resistance: 4KΩ (will be dimmer than expected)
 
 // WiFi Configuration
 #define WIFI_SSID "Wokwi-GUEST"
