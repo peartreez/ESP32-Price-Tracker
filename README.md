@@ -305,3 +305,75 @@ This project is open source and available under the MIT License.
 **Next Milestone**: v0.3.0 with full display functionality  
 
 **Note**: This project demonstrates professional ESP-IDF development practices and serves as a foundation for more complex embedded applications. The development approach prioritizes learning and best practices over quick functionality.
+
+## 🚨 **Amateur Issues & Lessons Learned**
+
+### **⚠️ PCB Design Issues (First Schematic)**
+
+This project was designed from my first PCB schematic, and several amateur mistakes were identified and corrected:
+
+#### **1. LED Resistor Values** ❌
+- **What I Did**: Used 2x 2KΩ resistors in series (4KΩ total)
+- **Problem**: LED will be extremely dim, barely visible
+- **Why It Happened**: First-time designer, didn't understand LED current requirements
+- **Correct Value**: Should be 220Ω for normal brightness
+- **Lesson**: Always calculate LED current: I = (3.3V - 2.1V) / 220Ω ≈ 5.5mA
+
+#### **2. Power Supply Confusion** ❌
+- **What I Did**: Initially assumed OLED needed 5V power
+- **Problem**: Code didn't match actual hardware
+- **Why It Happened**: Didn't research I2C device voltage requirements
+- **Correct Configuration**: OLED VCC to 3.3V (Pin 2) ✅
+- **Lesson**: I2C devices typically use 3.3V, not 5V
+
+#### **3. Button Pull-up Assumptions** ❌
+- **What I Did**: Assumed internal pull-up would work with 5V
+- **Problem**: Voltage level mismatch in code
+- **Why It Happened**: Didn't understand ESP32-C3 voltage domains
+- **Correct Configuration**: External 3.3V pull-up (Pin 3) ✅
+- **Lesson**: Always verify voltage levels between code and hardware
+
+#### **4. Documentation Mismatch** ❌
+- **What I Did**: Wrote code before finalizing hardware design
+- **Problem**: Code assumptions didn't match actual PCB
+- **Why It Happened**: Development order was backwards
+- **Correct Approach**: Design hardware first, then write code to match
+- **Lesson**: Hardware-first development prevents these issues
+
+### **🔧 How These Issues Were Fixed**
+
+1. **PCB Analysis**: Thorough review of schematic revealed mismatches
+2. **Code Corrections**: Updated all pin configurations and power assumptions
+3. **Documentation Sync**: Made README match actual hardware exactly
+4. **Component Flexibility**: Through-hole resistors allow easy correction
+
+### **📚 Lessons for Future Projects**
+
+#### **Design Order:**
+1. **Research components** and their requirements first
+2. **Design hardware** schematic completely
+3. **Write code** to match the actual hardware
+4. **Test and iterate** before finalizing
+
+#### **Common Beginner Mistakes to Avoid:**
+- **Don't assume** voltage levels - research everything
+- **Don't guess** resistor values - calculate them
+- **Don't design** hardware and software separately
+- **Don't skip** datasheet reading
+- **Don't ignore** power requirements
+
+#### **What I Did Right:**
+- **Multiple GND pins** for good grounding
+- **Proper I2C pin selection** (GPIO 8/9)
+- **Clean, organized schematic** layout
+- **Professional component selection**
+- **Good power distribution** design
+
+### **🎯 Current Status**
+
+- **Hardware Design**: ✅ Professional quality, minor resistor issue
+- **Code Implementation**: ✅ Now perfectly matches hardware
+- **Documentation**: ✅ Synchronized with actual design
+- **Ready for Assembly**: ✅ With recommended resistor changes
+
+**Note**: These issues are documented to help other beginners avoid the same mistakes. The project will work perfectly with the recommended 220Ω resistors instead of 2KΩ.

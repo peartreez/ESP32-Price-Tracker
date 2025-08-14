@@ -97,6 +97,56 @@ The PCB schematic shows a professional ESP32-C3 MINI based Bitcoin price tracker
 - Documented dual-resistor LED configuration
 - Added specific pin number references
 
+## 🚨 **Amateur Issues & Lessons Learned**
+
+### **⚠️ First-Time Designer Mistakes**
+
+As this was my first PCB schematic, several amateur issues were identified:
+
+#### **1. LED Resistor Calculation Error**
+- **Mistake**: Used 2x 2KΩ resistors without calculating LED current
+- **Result**: 4KΩ total resistance = extremely dim LED
+- **Correct Calculation**: I = (3.3V - 2.1V) / 220Ω ≈ 5.5mA
+- **Lesson**: Always calculate component values, don't guess
+
+#### **2. Voltage Level Assumptions**
+- **Mistake**: Assumed OLED needed 5V power
+- **Result**: Code didn't match actual hardware
+- **Correct**: I2C devices typically use 3.3V
+- **Lesson**: Research component requirements before designing
+
+#### **3. Development Order Problems**
+- **Mistake**: Wrote code before finalizing hardware design
+- **Result**: Multiple iterations to fix mismatches
+- **Correct**: Hardware-first development approach
+- **Lesson**: Design hardware completely, then write code to match
+
+### **🔧 How These Issues Were Resolved**
+
+1. **Thorough PCB Review**: Identified all mismatches
+2. **Code Corrections**: Updated to match actual hardware
+3. **Documentation Sync**: Made everything consistent
+4. **Component Flexibility**: Through-hole resistors allow easy fixes
+
+### **📚 Key Lessons for Beginners**
+
+- **Research First**: Understand component requirements before designing
+- **Calculate Values**: Don't guess resistor values or power requirements
+- **Hardware First**: Complete hardware design before writing code
+- **Read Datasheets**: Component specifications are your friend
+- **Test Assumptions**: Verify voltage levels and pin configurations
+
+### **✅ What Was Done Right**
+
+Despite the amateur mistakes, several aspects show good design practice:
+- **Clean Schematic Layout**: Professional organization
+- **Proper Grounding**: Multiple GND pins for stability
+- **Good Component Selection**: Standard, reliable parts
+- **I2C Configuration**: Correct pin selection and voltage levels
+- **Power Distribution**: Well-planned power rails
+
+---
+
 ## 📊 **PCB Quality Assessment**
 
 ### **Strengths:**
