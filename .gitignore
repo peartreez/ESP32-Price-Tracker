@@ -1,0 +1,65 @@
+# ESP-IDF build directory
+build/
+
+# ESP-IDF configuration
+sdkconfig
+sdkconfig.old
+
+# ESP-IDF managed components
+managed_components/
+
+# ESP-IDF dependencies
+dependencies.lock
+
+# CMake cache
+CMakeCache.txt
+CMakeFiles/
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp 
