@@ -183,4 +183,4 @@ This project is open source and available under the MIT License.
 
 ---
 
-**Note**: This project demonstrates professional ESP-IDF development practices and serves as a foundation for more complex embedded applications. 
+**Note**: This project demonstrates professional ESP-IDF development practices and serves as a foundation for more complex embedded applications.
