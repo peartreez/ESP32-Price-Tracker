@@ -2,7 +2,15 @@
 
 A professional ESP32 project built with ESP-IDF that fetches Bitcoin price data from CoinGecko API and displays it on an SSD1306 OLED display.
 
-## Features
+## 🚧 **Development Status: Beta v0.2.0**
+
+**Current Version**: 0.2.0 (Development)  
+**Last Updated**: December 19, 2024  
+**Status**: Ready for breadboard testing and development
+
+> **⚠️ Note**: This is a development version. Core functionality is implemented but some features (OLED text rendering, JSON parsing) are pending completion.
+
+## ✨ **Features**
 
 - **Real-time Bitcoin Price**: Fetches current Bitcoin price from CoinGecko API
 - **24h Price Change**: Displays 24-hour price change percentage
@@ -11,16 +19,30 @@ A professional ESP32 project built with ESP-IDF that fetches Bitcoin price data 
 - **Button Control**: Toggle between active and standby modes
 - **LED Status**: Visual feedback with onboard LED
 - **Professional Architecture**: Built with ESP-IDF using FreeRTOS tasks
+- **Breadboard Testing**: Built-in test mode for component verification
 
-## Hardware Requirements
+## 🧪 **Breadboard Testing Ready**
 
-- ESP32 development board
-- SSD1306 OLED display (128x64 pixels)
-- Push button
-- LED (optional, for status indication)
+This project includes comprehensive breadboard testing support:
+
+- **Test Mode Flag**: Enable breadboard testing with `#define BREADBOARD_TEST_MODE 1`
+- **I2C Scanner Component**: Test OLED display connections
+- **Testing Guide**: Complete breadboard setup instructions
+- **Component Verification**: Built-in delays and logging for testing
+
+📖 **See [BREADBOARD_TESTING.md](BREADBOARD_TESTING.md) for detailed setup instructions**
+
+## 🔧 **Hardware Requirements**
+
+- ESP32 development board (ESP32 DevKit, NodeMCU-32S, etc.)
+- SSD1306 OLED display (128x64 pixels, I2C)
+- Push button (momentary, normally open)
+- LED (any color, for status indication)
+- 220Ω resistor (for LED current limiting)
+- 10kΩ resistor (for button pull-up, though ESP32 has internal pull-up)
 - Breadboard and jumper wires
 
-## Pin Configuration
+## 📍 **Pin Configuration**
 
 | Component | ESP32 Pin | Description |
 |-----------|-----------|-------------|
@@ -29,26 +51,34 @@ A professional ESP32 project built with ESP-IDF that fetches Bitcoin price data 
 | Button | GPIO 4 | Input with internal pull-up |
 | LED | GPIO 7 | Output for status indication |
 
-## Project Structure
+## 📁 **Project Structure**
 
 ```
 bitcoin_price_fetcher/
-├── CMakeLists.txt          # Main project CMake file
-├── sdkconfig.defaults      # Default SDK configuration
+├── CMakeLists.txt              # Main project CMake file
+├── sdkconfig.defaults          # Default SDK configuration
 ├── main/
-│   ├── CMakeLists.txt      # Main component CMake file
-│   └── main.c             # Main application code
-└── README.md              # This file
+│   ├── CMakeLists.txt          # Main component CMake file
+│   └── main.c                  # Main application code
+├── components/
+│   └── i2c_scanner/            # I2C scanner for testing
+│       ├── CMakeLists.txt      # Component CMake file
+│       └── i2c_scanner.c       # I2C scanner implementation
+├── BREADBOARD_TESTING.md       # Breadboard testing guide
+├── CHANGELOG.md                # Development changelog
+├── README.md                   # This file
+└── .gitignore                  # Git exclusions
 ```
 
-## Building and Flashing
+## 🚀 **Quick Start**
 
 ### Prerequisites
 
-1. Install ESP-IDF (v4.4 or later)
-2. Set up ESP-IDF environment variables
+1. **ESP-IDF v4.4 or later** installed and configured
+2. **Hardware components** ready for breadboard testing
+3. **WiFi credentials** configured in `main/main.c`
 
-### Build Commands
+### Build and Test
 
 ```bash
 # Set up ESP-IDF environment
@@ -71,7 +101,7 @@ idf.py monitor
 idf.py build flash monitor
 ```
 
-## Configuration
+## ⚙️ **Configuration**
 
 ### WiFi Settings
 
@@ -82,6 +112,14 @@ Edit the WiFi credentials in `main/main.c`:
 #define WIFI_PASS "Your_WiFi_Password"
 ```
 
+### Test Mode
+
+Enable breadboard testing mode in `main/main.c`:
+
+```c
+#define BREADBOARD_TEST_MODE 1  // Set to 1 for testing
+```
+
 ### API Settings
 
 The project uses CoinGecko's free API. You can modify the API endpoint in `main/main.c`:
@@ -90,42 +128,44 @@ The project uses CoinGecko's free API. You can modify the API endpoint in `main/
 #define API_URL "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true"
 ```
 
-## Usage
+## 🧪 **Testing Workflow**
 
-1. **Power On**: The ESP32 will connect to WiFi and show a welcome screen
-2. **Press Button**: Toggle between active mode (fetching data) and standby
-3. **Active Mode**: 
-   - LED turns on
-   - Fetches Bitcoin price every 10 minutes
-   - Displays current price and 24h change
-4. **Standby Mode**: 
-   - LED turns off
-   - Shows standby screen
-   - No API calls
+### 1. **Breadboard Setup**
+- Follow [BREADBOARD_TESTING.md](BREADBOARD_TESTING.md)
+- Connect all components according to pin configuration
+- Verify power and ground connections
 
-## Technical Details
+### 2. **I2C Scanner Test**
+- Build and flash the I2C scanner component
+- Verify OLED display is detected at address 0x3C
+- Check serial output for device detection
 
-### Architecture
+### 3. **Main Project Test**
+- Enable test mode in main.c
+- Flash the main project
+- Monitor serial output for initialization messages
+- Test button functionality and LED response
 
-- **FreeRTOS Tasks**: Separate tasks for button handling and main logic
-- **Event-Driven WiFi**: Uses ESP-IDF event system for WiFi management
-- **HTTP Client**: Built-in ESP-IDF HTTP client for API requests
-- **I2C Communication**: Direct I2C communication with SSD1306 display
+### 4. **WiFi and API Test**
+- Verify WiFi connection
+- Test API calls and response handling
+- Check display updates
 
-### Key Components
+## 📊 **Current Development Status**
 
-- **WiFi Manager**: Handles connection, reconnection, and status monitoring
-- **HTTP Client**: Manages API requests with proper error handling
-- **Display Driver**: Low-level SSD1306 communication
-- **Button Handler**: Debounced button input with state management
+| Component | Status | Notes |
+|-----------|--------|-------|
+| Project Structure | ✅ Complete | Professional ESP-IDF setup |
+| GPIO Configuration | ✅ Complete | Button and LED working |
+| I2C Communication | ✅ Complete | SSD1306 initialization |
+| WiFi Management | ✅ Complete | Event-driven connection |
+| HTTP Client | ✅ Complete | API integration ready |
+| OLED Display | 🟡 Partial | Basic commands, text rendering pending |
+| JSON Parsing | 🟡 Partial | Structure ready, implementation pending |
+| Button Handling | 🟡 Partial | GPIO working, debouncing implemented |
+| Error Handling | 🟡 Partial | Basic logging, recovery pending |
 
-### Memory Management
-
-- Uses static allocation where possible
-- Proper task stack sizing
-- Efficient string handling
-
-## Troubleshooting
+## 🛠️ **Troubleshooting**
 
 ### Common Issues
 
@@ -135,14 +175,21 @@ The project uses CoinGecko's free API. You can modify the API endpoint in `main/
    - Check serial monitor for error messages
 
 2. **Display Not Working**
-   - Verify I2C connections (SDA/SCL)
+   - Use I2C scanner to verify connection
+   - Check I2C connections (SDA/SCL)
+   - Verify power supply (3.3V, not 5V)
    - Check I2C address (default: 0x3C)
-   - Ensure proper power supply
 
 3. **Build Errors**
    - Verify ESP-IDF installation
    - Check component dependencies
    - Ensure proper CMake configuration
+
+4. **Button Not Responding**
+   - Check GPIO pin connection
+   - Verify button orientation
+   - Test with multimeter for continuity
+   - Check internal pull-up configuration
 
 ### Debug Information
 
@@ -151,11 +198,25 @@ The project includes comprehensive logging:
 - HTTP request results
 - Display operations
 - Button events
+- Test mode information
 
 Use `idf.py monitor` to view real-time logs.
 
-## Future Enhancements
+## 🔮 **Roadmap**
 
+### **v0.3.0** (Next Release)
+- [ ] Complete OLED text rendering
+- [ ] Implement JSON response parsing
+- [ ] Add price formatting and display
+- [ ] Enhance error handling
+
+### **v1.0.0** (First Stable Release)
+- [ ] Full functionality testing
+- [ ] Performance optimization
+- [ ] Documentation completion
+- [ ] Example configurations
+
+### **Future Enhancements**
 - [ ] Add more cryptocurrencies
 - [ ] Implement price alerts
 - [ ] Add historical price charts
@@ -163,24 +224,38 @@ Use `idf.py monitor` to view real-time logs.
 - [ ] MQTT integration for IoT
 - [ ] Battery power management
 
-## Contributing
+## 📚 **Documentation**
 
-This is a learning project for ESP-IDF development. Feel free to:
-- Report issues
-- Suggest improvements
+- **[BREADBOARD_TESTING.md](BREADBOARD_TESTING.md)** - Complete breadboard setup guide
+- **[CHANGELOG.md](CHANGELOG.md)** - Development history and version tracking
+- **[ESP-IDF Documentation](https://docs.espressif.com/projects/esp-idf/)** - Framework reference
+
+## 🤝 **Contributing**
+
+This is a learning project for ESP-IDF development. We welcome contributions:
+
+- Report issues and bugs
+- Suggest improvements and features
 - Submit pull requests
-- Share your modifications
+- Share your modifications and experiences
 
-## License
+## 📄 **License**
 
 This project is open source and available under the MIT License.
 
-## Acknowledgments
+## 🙏 **Acknowledgments**
 
-- Espressif Systems for ESP-IDF
-- CoinGecko for the free cryptocurrency API
-- Adafruit for the original SSD1306 library concept
+- **Espressif Systems** for ESP-IDF
+- **CoinGecko** for the free cryptocurrency API
+- **Adafruit** for the original SSD1306 library concept
+- **FreeRTOS** for the real-time operating system
 
 ---
 
-**Note**: This project demonstrates professional ESP-IDF development practices and serves as a foundation for more complex embedded applications.
+## 📝 **Development Notes**
+
+**Current Focus**: Completing OLED display functionality and JSON parsing  
+**Testing Priority**: Breadboard verification of all components  
+**Next Milestone**: v0.3.0 with full display functionality  
+
+**Note**: This project demonstrates professional ESP-IDF development practices and serves as a foundation for more complex embedded applications. The development approach prioritizes learning and best practices over quick functionality.

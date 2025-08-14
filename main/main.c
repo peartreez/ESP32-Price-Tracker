@@ -16,6 +16,9 @@
 #include "nvs_flash.h"
 #include "cJSON.h"
 
+// Test Configuration - Set to 1 for breadboard testing
+#define BREADBOARD_TEST_MODE 1
+
 // Display Configuration
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
@@ -160,6 +163,10 @@ void app_main(void)
 {
     ESP_LOGI(TAG, "Starting Bitcoin Price Fetcher...");
     
+    #if BREADBOARD_TEST_MODE
+    ESP_LOGI(TAG, "BREADBOARD TEST MODE ENABLED - Check connections!");
+    #endif
+    
     // Initialize NVS
     esp_err_t ret = nvs_flash_init();
     if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
@@ -179,6 +186,12 @@ void app_main(void)
     
     // Show welcome screen
     show_welcome_screen();
+    
+    #if BREADBOARD_TEST_MODE
+    // In test mode, wait a bit to check display
+    ESP_LOGI(TAG, "Testing display for 3 seconds...");
+    vTaskDelay(pdMS_TO_TICKS(3000));
+    #endif
     
     // Initialize WiFi
     wifi_init_sta();

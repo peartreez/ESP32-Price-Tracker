@@ -6,4 +6,7 @@ cmake_minimum_required(VERSION 3.16)
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
 
 # Set the project name
-project(bitcoin_price_fetcher) 
+project(bitcoin_price_fetcher)
+
+# Add components directory
+set(EXTRA_COMPONENT_DIRS "components") 
