@@ -150,12 +150,62 @@ idf.py build flash monitor
 
 ### WiFi Settings
 
-Edit the WiFi credentials in `main/main.c`:
+**⚠️ IMPORTANT**: WiFi credentials are no longer hardcoded for security!
 
+The project now uses **NVS (Non-Volatile Storage)** to securely store WiFi credentials in the ESP32's flash memory.
+
+#### **Option 1: Use Default Credentials (Development Only)**
+Edit the default values in `main/main.c`:
 ```c
-#define WIFI_SSID "Your_WiFi_SSID"
-#define WIFI_PASS "Your_WiFi_Password"
+#define WIFI_SSID_DEFAULT "Your_WiFi_SSID"      // Change this
+#define WIFI_PASS_DEFAULT "Your_WiFi_Password"  // Change this
 ```
+
+#### **Option 2: Configure via NVS (Recommended for Production)**
+
+1. **Build and flash the WiFi configuration utility:**
+   ```bash
+   cd tools
+   idf.py build flash monitor
+   ```
+
+2. **Edit the credentials in `tools/wifi_config.c`:**
+   ```c
+   const char *my_ssid = "Your_Actual_WiFi_SSID";
+   const char *my_password = "Your_Actual_WiFi_Password";
+   ```
+
+3. **Flash the utility to set credentials:**
+   ```bash
+   idf.py flash monitor
+   ```
+
+4. **Flash the main project:**
+   ```bash
+   cd ..
+   idf.py build flash monitor
+   ```
+
+#### **Option 3: Programmatic Configuration**
+Use the NVS functions in your code:
+```c
+#include "nvs_flash.h"
+#include "nvs.h"
+
+// Save credentials
+wifi_config_save_to_nvs("MyWiFi", "MyPassword");
+
+// Load credentials
+char ssid[33], password[65];
+wifi_config_load_from_nvs(ssid, password);
+```
+
+### **Security Benefits:**
+- ✅ **No hardcoded credentials** in source code
+- ✅ **Credentials stored securely** in ESP32 flash memory
+- ✅ **Easy to update** without recompiling
+- ✅ **Production ready** configuration management
+- ✅ **Multiple devices** can use different credentials
 
 ### Test Mode
 

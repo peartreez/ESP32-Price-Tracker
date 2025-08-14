@@ -38,9 +38,16 @@
 // - LED: GPIO 7 → 2KΩ resistor → LED anode → 2KΩ resistor → GND (Pin 24)
 // - Total LED resistance: 4KΩ (will be dimmer than expected)
 
-// WiFi Configuration
-#define WIFI_SSID "Wokwi-GUEST"
-#define WIFI_PASS ""
+// WiFi Configuration - Now configurable via NVS
+#define WIFI_SSID_DEFAULT "Your_WiFi_SSID"  // Default fallback
+#define WIFI_PASS_DEFAULT "Your_WiFi_Password"  // Default fallback
+#define WIFI_MAX_RETRY_COUNT 5
+#define WIFI_RETRY_DELAY_MS 1000
+
+// NVS Keys for WiFi credentials
+#define NVS_NAMESPACE "wifi_config"
+#define NVS_KEY_SSID "ssid"
+#define NVS_KEY_PASS "password"
 
 // API Configuration
 #define API_URL "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true"
@@ -88,6 +95,11 @@ static void ssd1306_data(uint8_t data);
 static void ssd1306_clear(void);
 static void ssd1306_display(void);
 static void ssd1306_draw_bitmap(int x, int y, const unsigned char *bitmap, int w, int h);
+
+// WiFi configuration functions
+static esp_err_t wifi_config_load_from_nvs(char *ssid, char *password);
+static esp_err_t wifi_config_save_to_nvs(const char *ssid, const char *password);
+static void wifi_config_set_defaults(char *ssid, char *password);
 
 // WiFi event handler
 static void event_handler(void* arg, esp_event_base_t event_base,
@@ -444,15 +456,117 @@ static void wifi_init_sta(void)
                                                       NULL,
                                                       &instance_got_ip));
     
+    // Load WiFi credentials from NVS or use defaults
+    char ssid[33] = {0};  // 32 chars + null terminator
+    char password[65] = {0};  // 64 chars + null terminator
+    
+    if (wifi_config_load_from_nvs(ssid, password) != ESP_OK) {
+        wifi_config_set_defaults(ssid, password);
+        ESP_LOGW(TAG, "Using default WiFi credentials. Configure via NVS for production.");
+    }
+    
     wifi_config_t wifi_config = {
         .sta = {
-            .ssid = WIFI_SSID,
-            .password = WIFI_PASS,
+            .ssid = "",
+            .password = "",
         },
     };
+    
+    // Copy credentials to WiFi config (safe string copy)
+    strncpy((char*)wifi_config.sta.ssid, ssid, sizeof(wifi_config.sta.ssid) - 1);
+    strncpy((char*)wifi_config.sta.password, password, sizeof(wifi_config.sta.password) - 1);
+    
     ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
     ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_STA, &wifi_config));
     ESP_ERROR_CHECK(esp_wifi_start());
     
-    ESP_LOGI(TAG, "wifi_init_sta finished.");
+    ESP_LOGI(TAG, "WiFi initialized with SSID: %s", ssid);
+}
+
+// WiFi configuration functions
+
+// Load WiFi credentials from NVS
+static esp_err_t wifi_config_load_from_nvs(char *ssid, char *password)
+{
+    nvs_handle_t nvs_handle;
+    esp_err_t err;
+    
+    // Open NVS namespace
+    err = nvs_open(NVS_NAMESPACE, NVS_READONLY, &nvs_handle);
+    if (err != ESP_OK) {
+        ESP_LOGI(TAG, "NVS namespace not found, using defaults");
+        return ESP_ERR_NOT_FOUND;
+    }
+    
+    // Load SSID
+    size_t ssid_len = 32;
+    err = nvs_get_str(nvs_handle, NVS_KEY_SSID, ssid, &ssid_len);
+    if (err != ESP_OK) {
+        ESP_LOGI(TAG, "SSID not found in NVS, using default");
+        nvs_close(nvs_handle);
+        return ESP_ERR_NOT_FOUND;
+    }
+    
+    // Load password
+    size_t pass_len = 64;
+    err = nvs_get_str(nvs_handle, NVS_KEY_PASS, password, &pass_len);
+    if (err != ESP_OK) {
+        ESP_LOGI(TAG, "Password not found in NVS, using default");
+        nvs_close(nvs_handle);
+        return ESP_ERR_NOT_FOUND;
+    }
+    
+    nvs_close(nvs_handle);
+    ESP_LOGI(TAG, "WiFi credentials loaded from NVS");
+    return ESP_OK;
+}
+
+// Save WiFi credentials to NVS
+static esp_err_t wifi_config_save_to_nvs(const char *ssid, const char *password)
+{
+    nvs_handle_t nvs_handle;
+    esp_err_t err;
+    
+    // Open NVS namespace for writing
+    err = nvs_open(NVS_NAMESPACE, NVS_READWRITE, &nvs_handle);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to open NVS namespace: %s", esp_err_to_name(err));
+        return err;
+    }
+    
+    // Save SSID
+    err = nvs_set_str(nvs_handle, NVS_KEY_SSID, ssid);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to save SSID: %s", esp_err_to_name(err));
+        nvs_close(nvs_handle);
+        return err;
+    }
+    
+    // Save password
+    err = nvs_set_str(nvs_handle, NVS_KEY_PASS, password);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to save password: %s", esp_err_to_name(err));
+        nvs_close(nvs_handle);
+        return err;
+    }
+    
+    // Commit changes
+    err = nvs_commit(nvs_handle);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to commit NVS: %s", esp_err_to_name(err));
+        nvs_close(nvs_handle);
+        return err;
+    }
+    
+    nvs_close(nvs_handle);
+    ESP_LOGI(TAG, "WiFi credentials saved to NVS");
+    return ESP_OK;
+}
+
+// Set default WiFi credentials
+static void wifi_config_set_defaults(char *ssid, char *password)
+{
+    strcpy(ssid, WIFI_SSID_DEFAULT);
+    strcpy(password, WIFI_PASS_DEFAULT);
+    ESP_LOGI(TAG, "Using default WiFi credentials");
 } 
